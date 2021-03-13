@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+.btn-outline-primary {
+  padding: 10px;
+  color: #007bff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #007bff !important;
+  border-radius: 5px;
+}
+
+.btn-outline-primary:hover {
+  color: #ffffff !important;
+  background-color: #007bff !important;
+  transition: 1s all ease;
+}

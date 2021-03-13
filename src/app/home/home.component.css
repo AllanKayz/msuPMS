@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+main {
+  height: 100vh;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-contents {
+  display: flex;
+  width: 60%;
+  flex-direction: column;
+  text-align: center;
+}
+
+.choice-links {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 2rem;
+}
+
+.choice-links a,
+.btn {
+  width: 200px;
+}
