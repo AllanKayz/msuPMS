@@ -1,0 +1,27 @@
+main {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form {
+  width: 25%;
+  height: 50%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+input {
+  height: 30px;
+  border-radius: 5px;
+}
+
+input[type='submit'] {
+  width: 50%;
+  padding: 10px;
+}

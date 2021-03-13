@@ -1,0 +1,16 @@
+main {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  flex: 1;
+  padding: 1rem;
+  border-right: 2px solid #ccc;
+  box-shadow: 4px 0 20px -5px rgba(0, 0, 0, 0.589);
+  flex-direction: column;
+}
+
+.content-panel {
+  flex: 4;
+}

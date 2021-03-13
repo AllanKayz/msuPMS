@@ -11,8 +11,9 @@ main {
   flex-direction: column;
 }
 
-.map {
+.map-container {
   flex: 4;
+  height: 100%;
 }
 
 ul {
