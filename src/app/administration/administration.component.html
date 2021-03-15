@@ -1,4 +1,27 @@
 <main>
-  <section class="sidebar"></section>
-  <section class="content-panel"></section>
+  <section class="sidebar">
+    <div class="legend">
+      <fieldset>
+        <legend>Legend</legend>
+        <ul>
+          <li class="vacant-slots">Vacant Slots</li>
+          <li class="occupied-slots">Occupied Slots</li>
+          <li class="reserved-slots">Reserved Slots</li>
+          <li class="vip-slots">VIP Slots</li>
+        </ul>
+      </fieldset>
+    </div>
+    <br />
+    <div class="admin-tools">
+      <button class="btn btn-outline-primary" (click)="onAllSlotsVIP()">Make All Slots VIP</button>
+      <button class="btn btn-outline-primary" (click)="onReserveAllSlots()">Reserve All Slots</button>
+      <button class="btn btn-outline-primary" (click)="onAllSlotsVacant()">Make All Slots Vacant</button>
+    </div>
+    <div class="logout">
+      <button class="btn btn-outline-primary" (click)="onLogout()">Log Out</button>
+    </div>
+  </section>
+  <section class="content-panel">
+    <div id="map" class="map-container" #map></div>
+  </section>
 </main>

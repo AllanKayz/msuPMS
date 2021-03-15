@@ -29,3 +29,11 @@ a {
   background-color: #007bff !important;
   transition: 1s all ease;
 }
+
+ul {
+  list-style: none;
+}
+
+li {
+  padding: 10px 0;
+}

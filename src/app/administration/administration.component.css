@@ -9,8 +9,29 @@ main {
   border-right: 2px solid #ccc;
   box-shadow: 4px 0 20px -5px rgba(0, 0, 0, 0.589);
   flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .content-panel {
   flex: 4;
+}
+
+.map-container {
+  height: 100%;
+}
+
+.admin-tools {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-tools button {
+  margin: 10px 5px;
+}
+
+.logout {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  top: 100px;
 }

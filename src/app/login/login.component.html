@@ -1,11 +1,11 @@
 <main>
   <div class="login-form">
-    <form #loginForm="ngForm">
+    <form #loginForm="ngForm" (ngSubmit)="onLogin($event, loginForm)">
       <label for="usermail">Email</label>
       <input type="text" name="usermail" placeholder="yourmail@email.com" ngModel required><br /><br />
       <label for="userpwd">Password</label>
       <input type="password" name="userpwd" ngModel required><br /><br />
-      <input type="submit" class="btn btn-outline-primary" value="LOGIN">
+      <button type="submit" class="btn btn-outline-primary submit">LOGIN</button>
     </form>
   </div>
 </main>

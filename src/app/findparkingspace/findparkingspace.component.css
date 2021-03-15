@@ -16,14 +16,6 @@ main {
   height: 100%;
 }
 
-ul {
-  list-style: none;
-}
-
-li {
-  padding: 10px 0;
-}
-
 .user-guide h1 {
   text-decoration: underline;
 }

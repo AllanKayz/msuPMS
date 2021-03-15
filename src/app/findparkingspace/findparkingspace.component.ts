@@ -37,54 +37,26 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
     })
 
     // Creating scale control
-    var scale = L.control.scale();
+    const scale = L.control.scale();
     scale.addTo(this.map);
+
+    // Add Layer Control to map
+    let baseMaps = {
+      "Google Satellite": googleSat,
+      "Google Hybrid": googleHybrid,
+      "Google Terrain": googleTerrain,
+      "Google Streets": googleStreets,
+      "Open Street Map": OSM
+    }
+
+    L.control.layers(baseMaps).addTo(this.map);
+
   }
 
   ngOnInit(): void {
     // Initialize the map container
     this.initMap();
-    //Get Other Data
-    this.dataService.sendGetRequest().pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
 
-      /*const allLayers = L.layerGroup();
-
-      const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: '&copy; <a href="https//www.google.com/permissions">Google Maps</a>' }),
-        googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: '&copy; <a href="https//www.google.com/permissions">Google Maps</a>' }),
-        googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: '&copy; <a href="https//www.google.com/permissions">Google Maps</a>' }),
-        googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'], attribution: '&copy; <a href="https//www.google.com/permissions">Google Maps</a>' }),
-        OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}{x}{y}.png', { attribution: '&copy; <a href="https//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' });
-
-
-      const map = L.map('map', {
-        center: [-17.39040873783931, 32.24083900451661],
-        zoom: 13,
-        minZoom: 9,
-        maxZoom: 19,
-        boxZoom: true,
-        layers: [googleHybrid, allLayers],
-      });
-
-      // Creating scale control
-      var scale = L.control.scale();
-      scale.addTo(map);
-
-      const testLayer = L.geoJSON(data, {
-        pointToLayer: function (feature, latlng) {
-          let poleMarker = {
-            fillColor: "#008000",
-            color: "#008000",
-            fillOpacity: 1,
-            opacity: 0.8,
-            weight: 1,
-            radius: 6
-          }
-          return L.circleMarker(latlng, poleMarker);
-        }
-      })
-
-      testLayer.addTo(map);*/
-    });
     // Get Parking Slots Data
     this.parkingSlotsService.getParkingSlots().pipe(takeUntil(this.destroy$)).subscribe(slots => {
       this.parkSlots = slots;
@@ -92,7 +64,7 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
     });
   }
 
-  //Parking Slots Styling
+  // Parking Slots Styling
   private initParkingSlotsLayer() {
     const slotsLayer = L.geoJSON(this.parkSlots, {
       style: (feature) => ({
@@ -104,6 +76,7 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
       }),
       onEachFeature: (feature, layer) => (
         layer.on({
+          click: (e) => (this.layerClick(e)),
           mouseover: (e) => (this.highlightFeature(e)),
           mouseout: (e) => (this.resetFeature(e))
         })
@@ -114,7 +87,7 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
 
   // Highlight feature event
   private highlightFeature(e: any) {
-    const layer = e.target;
+    let layer = e.target;
     layer.setStyle({
       weight: 10,
       opacity: 1.0,
@@ -125,7 +98,7 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
   }
   // reset hightlight event
   private resetFeature(e: any) {
-    const layer = e.target;
+    let layer = e.target;
     layer.setStyle({
       weight: 3,
       opacity: 0.5,
@@ -133,6 +106,17 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
       fillOpacity: 0.8,
       fillColor: '#6db65b'
     })
+  }
+
+  // bind popup on layer click
+  private layerClick(e: any) {
+    let layer = e.target;
+    if (layer.feature.properties.stand_id == 2900) {
+      layer.bindPopup('<h3>This slot is' + '\t' + layer.feature.properties.stand_id + '</h3><br/><button class="btn btn-outline-primary">Book Into It</button>');
+    }
+    else {
+      layer.bindPopup('<h3>This slot is ' + '\t' + layer.feature.properties.stand_id + '</h3>');
+    }
   }
 
   ngOnDestroy() {
