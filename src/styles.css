@@ -37,3 +37,43 @@ ul {
 li {
   padding: 10px 0;
 }
+
+.vacant-slots,
+.occupied-slots,
+.vip-slots,
+.reserved-slots {
+  display: flex;
+  flex-direction: row;
+}
+
+.vacant-slot-icon {
+  border: 2px solid #008000;
+  background-color: rgba(0, 128, 0, 0.4);
+  width: 15px;
+  height: 15px;
+  margin: 0 5px;
+}
+
+.occupied-slot-icon {
+  border: 2px solid #800080;
+  background-color: rgba(128, 0, 128, 0.4);
+  width: 15px;
+  height: 15px;
+  margin: 0 5px;
+}
+
+.vip-slot-icon {
+  border: 2px solid #ff0000;
+  background-color: rgba(255, 0, 0, 0.4);
+  width: 15px;
+  height: 15px;
+  margin: 0 5px;
+}
+
+.reserved-slot-icon {
+  border: 2px solid #0000ff;
+  background-color: rgba(0, 0, 255, 0.4);
+  width: 15px;
+  height: 15px;
+  margin: 0 5px;
+}
