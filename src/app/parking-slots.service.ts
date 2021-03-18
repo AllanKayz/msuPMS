@@ -8,7 +8,7 @@ import { retry, catchError } from 'rxjs/operators';
 })
 export class ParkingSlotsService {
 
-  private REST_API_URL = 'http://localhost:4500/tanhamira/api/getShpData.php?action=getStands';
+  private REST_API_URL = 'http://localhost:3000';
   constructor(private httpClient: HttpClient) { }
 
   // Http Options
@@ -35,6 +35,6 @@ export class ParkingSlotsService {
   }
 
   public getParkingSlots() {
-    return this.httpClient.get(this.REST_API_URL).pipe(retry(4), catchError(this.handleError));
+    return this.httpClient.get(this.REST_API_URL + '/slots').pipe(retry(4), catchError(this.handleError));
   }
 }

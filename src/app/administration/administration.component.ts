@@ -38,6 +38,17 @@ export class AdministrationComponent implements OnInit {
     // Creating scale control
     var scale = L.control.scale();
     scale.addTo(this.map);
+
+    // Add Layer Control to map
+    let baseMaps = {
+      "Google Satellite": googleSat,
+      "Google Hybrid": googleHybrid,
+      "Google Terrain": googleTerrain,
+      "Google Streets": googleStreets,
+      "Open Street Map": OSM
+    }
+
+    L.control.layers(baseMaps).addTo(this.map);
   }
 
   ngOnInit(): void {

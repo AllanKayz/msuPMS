@@ -17,15 +17,11 @@ export class DataService {
   // Http Options
   httpHeader = {
     headers: new HttpHeaders({
-      //'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': '*',
       //'Access-Control-Allow-Methods': 'GET POST',
       //'Access-Control-Allow-Headers': 'X-Requested-With',
-      'Content-Type': 'application/json'
+      //'Content-Type': 'application/json'
     })
-  }
-
-  getUsers(): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.REST_API_SERVER + '/users').pipe(retry(3), catchError(this.handleError));
   }
 
 
@@ -40,7 +36,7 @@ export class DataService {
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // Server-side errors
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      errorMessage = `Error Code: ${error.status}\n Message: ${error.message}`;
     }
     window.alert(errorMessage);
     return throwError(errorMessage);

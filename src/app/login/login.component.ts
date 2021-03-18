@@ -10,16 +10,23 @@ import { User } from '../user';
 
 export class LoginComponent implements OnInit {
 
-  private user: any;
+  private user: any = {};
 
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
+    //this.fetchUser('administrator@pmsmail.com');
   }
+
 
   fetchUser(usermail: any) {
     return this.dataService.getUser(usermail).subscribe((data: any) => {
       this.user = data;
+      console.log(this.user);
+
+      for (let d = 0; d < this.user.length; d++) {
+        console.log(this.user[d]['name']);
+      }
     });
   }
 
@@ -32,10 +39,14 @@ export class LoginComponent implements OnInit {
     }
     else {
       this.dataService.getUser(loginForm.value.usermail).subscribe((data: any) => {
-        if (loginForm.value.usermail === data.id.toString() && loginForm.value.userpwd === data.password) {
-          window.location.href = '/administration';
-        }
-        else { window.alert('Login Failed, either Username or Password is wrong'); }
+        this.user = data;
+
+        this.user.map((usr: any) => {
+          if (loginForm.value.userpwd === usr.password) {
+            return window.location.href = '/administration';
+          }
+          else { return window.alert('Login Failed, Wrong Credentials Used'); }
+        });
       });
     }
   }
