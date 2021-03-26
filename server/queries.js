@@ -10,6 +10,7 @@ const pool = new Pool({
     port: dbParams.port
 });
 
+
 const getUserByEmail = (request, response) => {
     const email = request.params.email;
     pool.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
@@ -18,7 +19,7 @@ const getUserByEmail = (request, response) => {
 };
 
 const parkingSlots = "SELECT 'Feature' As type ,ST_AsGeoJSON(geom):: json As geometry" +
-    ",row_to_json((SELECT l FROM(SELECT slotID, status, zone) As l)) As properties FROM parkingslots;";
+    ",row_to_json((SELECT l FROM(SELECT id, status, zone, color) As l)) As properties FROM parkingslots;";
 
 const getParkingSlots = (request, response) => {
     pool.query(parkingSlots, (error, results) => {
@@ -34,9 +35,24 @@ const updateSlot = (request, response) => {
     });
 };
 
-const getUsers = (request, response) => {
-    pool.query('SELECT * FROM users ORDER BY id ASC',
-        (error, results) => { if (error) { throw error } response.status(200).json(results.rows); });
-}
+const msu_buildings = "SELECT 'Feature' As type, ST_ASGeoJSON(geom):: json As geometry" +
+    ",row_to_json((SELECT l FROM(SELECT building_id, name) As l)) As properties FROM msu_buildings;";
 
-module.exports = { getUsers, getParkingSlots, getUserByEmail, updateSlot }
+const getBuildings = (request, response) => {
+    pool.query(msu_buildings, (error, results) => {
+        if (error) { throw error } response.status(200).json(results.rows);
+    });
+};
+
+const msu_roads = "SELECT 'Feature' As type, ST_ASGeoJSON(geom):: json As geometry" +
+    ",row_to_json((SELECT l FROM(SELECT road_id, name) As l)) As properties FROM msu_roads;";
+
+const getRoads = (request, response) => {
+    pool.query(msu_roads, (error, results) => {
+        if (error) { throw error } response.status(200).json(results.rows);
+    });
+};
+
+
+
+module.exports = { getParkingSlots, getUserByEmail, updateSlot, getBuildings, getRoads }

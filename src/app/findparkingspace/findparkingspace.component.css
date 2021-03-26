@@ -19,3 +19,37 @@ main {
 .user-guide h1 {
   text-decoration: underline;
 }
+
+.attrTable {
+  width: 20%;
+  background-color: azure;
+  z-index: 100000 !important;
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+
+.heading {
+  text-align: center;
+  text-transform: uppercase;
+  border-bottom: 2px solid #000;
+}
+
+.table-wrap,
+.table,
+.tableCommands {
+  width: 100%;
+}
+
+.thead {
+  text-align: center;
+}
+
+.tableCommands {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}

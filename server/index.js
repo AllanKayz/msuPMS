@@ -17,4 +17,6 @@ const db = require('./queries');
 app.get('/slots', db.getParkingSlots);
 app.get('/users/:email', db.getUserByEmail);
 app.put('/users/:id', db.updateSlot);
-app.get('/users', db.getUsers);
+app.get('/roads', db.getRoads);
+app.get('/buildings', db.getBuildings);
+

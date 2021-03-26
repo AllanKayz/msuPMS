@@ -37,4 +37,12 @@ export class ParkingSlotsService {
   public getParkingSlots() {
     return this.httpClient.get(this.REST_API_URL + '/slots').pipe(retry(4), catchError(this.handleError));
   }
+
+  public getRoads() {
+    return this.httpClient.get(this.REST_API_URL + '/roads').pipe(retry(4), catchError(this.handleError));
+  }
+
+  public getBuildings() {
+    return this.httpClient.get(this.REST_API_URL + '/buildings').pipe(retry(4), catchError(this.handleError));
+  }
 }
