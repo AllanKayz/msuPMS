@@ -45,4 +45,16 @@ export class ParkingSlotsService {
   public getBuildings() {
     return this.httpClient.get(this.REST_API_URL + '/buildings').pipe(retry(4), catchError(this.handleError));
   }
+
+  public bookSlot(id: number, status: string) {
+    return this.httpClient.post(this.REST_API_URL + '/bookSlot', { id, status }).pipe(retry(1), catchError(this.handleError));
+  }
+
+  public allSlotStatus(status: string) {
+    return this.httpClient.post(this.REST_API_URL + '/updateall', { status }).pipe(retry(1), catchError(this.handleError));
+  }
+
+  public updateSlotState(id: number, status: string) {
+    return this.httpClient.post(this.REST_API_URL + '/updateslot', { id, status }).pipe(retry(1), catchError(this.handleError));
+  }
 }

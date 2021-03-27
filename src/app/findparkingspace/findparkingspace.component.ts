@@ -16,6 +16,8 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
   private parkSlots: any;
   private buildings: any;
   private roads: any;
+  private buildingLayer: any;
+  private baseMaps: any;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private dataService: DataService, private parkingSlotsService: ParkingSlotsService) { }
@@ -43,16 +45,13 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
     scale.addTo(this.map);
 
     // Add Layer Control to map
-    let baseMaps = {
+    this.baseMaps = {
       "Google Satellite": googleSat,
       "Google Hybrid": googleHybrid,
       "Google Terrain": googleTerrain,
       "Google Streets": googleStreets,
       "Open Street Map": OSM
     }
-
-    L.control.layers(baseMaps).addTo(this.map);
-
   }
 
   ngOnInit(): void {
@@ -79,7 +78,7 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
 
   // Building Styling
   private initBuildingsLayer() {
-    const buildingLayer = L.geoJSON(this.buildings, {
+    this.buildingLayer = L.geoJSON(this.buildings, {
       style: (feature) => ({
         weight: 2,
         opacity: 1,
@@ -88,9 +87,14 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
         fillColor: '#ccc'
       })
     });
-    this.map.addLayer(buildingLayer);
+    this.map.addLayer(this.buildingLayer);
 
-    //this.map.addOverlay(buildingLayer, 'Buildings');
+
+    let overlay = {
+      "Buildings": this.buildingLayer,
+    }
+
+    L.control.layers(this.baseMaps, overlay).addTo(this.map);
   }
 
   // Roads Styling 
@@ -105,7 +109,7 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
 
   // Parking Slots Styling
   private initParkingSlotsLayer() {
-    let slotsLayer = L.geoJSON(this.parkSlots, {
+    const slotsLayer = L.geoJSON(this.parkSlots, {
       style: (feature: any): any => {
         let fillClr = '';
         switch (feature.properties.status) {
@@ -166,23 +170,51 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
     })*/
   }
 
-  bookSlot() {
-    console.log('Clicked')
-  }
-
 
   @ViewChild('tbodyContent') tbodyContent: any;
+  @ViewChild('btnBookSlot') btnBookSlot: any;
+  @ViewChild('attrTable') attrTable: any;
 
+  private attributes: any;
+  private layerID: number = 0;
+  private Occupy: string = 'OCCUPIED';
   // bind popup o layer click
   private layerClick(e: any) {
     let layer = e.target;
+    this.attributes = layer.feature.properties;
+
+    // control visibility of the attribute table
+    this.attrTable.nativeElement.classList.remove('hide');
+
+    // add attributes data of the clicked item to table
+    let data: any = '';
+    for (let key in this.attributes) {
+      data += ('<tr class="center aligned"><td>' + key + '</td><td>' + this.attributes[key] + '</td></tr>');
+    }
+    this.tbodyContent.nativeElement.innerHTML = data;
+
+    // Allow for slot booking if vaccant
     if (layer.feature.properties.status == "VACCANT") {
-      console.log(this.tbodyContent.nativeElement);
-      layer.bindPopup('<h3>This slot is' + '\t' + layer.feature.properties.status + '</h3><br/><button #bookSlot class="bookSlot btn btn-outline-primary">Book Into It</button>');
+      this.layerID = this.attributes.id;
+      this.btnBookSlot.nativeElement.classList.remove('hide');
     }
     else {
-      layer.bindPopup('<h3>This slot is ' + '\t' + layer.feature.properties.status + '</h3>');
+      this.btnBookSlot.nativeElement.classList.add('hide');
     }
+
+    this.map.panTo(e.latlng);
+  }
+
+  // Book slot function
+  bookSlot() {
+    const bkSlot = this.parkingSlotsService.bookSlot(this.layerID, this.Occupy);
+    bkSlot.subscribe(data => { window.alert(data) });
+    location.reload(true);
+  }
+
+  // Close attribute table function
+  closeAttrTable() {
+    this.attrTable.nativeElement.classList.add('hide');
   }
 
   ngOnDestroy() {

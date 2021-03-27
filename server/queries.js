@@ -19,7 +19,7 @@ const getUserByEmail = (request, response) => {
 };
 
 const parkingSlots = "SELECT 'Feature' As type ,ST_AsGeoJSON(geom):: json As geometry" +
-    ",row_to_json((SELECT l FROM(SELECT id, status, zone, color) As l)) As properties FROM parkingslots;";
+    ",row_to_json((SELECT l FROM(SELECT id, status, zone) As l)) As properties FROM parkingslots;";
 
 const getParkingSlots = (request, response) => {
     pool.query(parkingSlots, (error, results) => {
@@ -28,10 +28,23 @@ const getParkingSlots = (request, response) => {
 };
 
 const updateSlot = (request, response) => {
-    const slotID = parseInt(request.params.slotID);
-    const { status, zone } = request.body;
-    pool.query('UPDATE parkingslots SET status = $1, zone = $2 WHERE slotID = $3', [status, zone, slotID], (error, results) => {
-        if (error) { throw error } response.status(200).send(`User modified with ID: ${slotID}`);
+    const { id, status } = request.body;
+    pool.query('UPDATE parkingslots SET status = $1 WHERE id = $2', [status, id], (error, results) => {
+        if (error) { throw error } response.status(200).json(`Slot modified with ID: ${id}`);
+    });
+};
+
+const multipleUpdation = (request, response) => {
+    const { status } = request.body;
+    pool.query('UPDATE parkingslots SET status = $1', [status], (error, results) => {
+        if (error) { throw error } response.status(200).json(`All Slots Updated To Status ${status}`)
+    });
+}
+
+const bookSlot = (request, response) => {
+    const { status, id } = request.body;
+    pool.query('UPDATE parkingslots SET status = $1 WHERE id = $2', [status, id], (error, results) => {
+        if (error) { throw error } response.status(200).json(`Slot with ID: ${id} booked`);
     });
 };
 
@@ -55,4 +68,4 @@ const getRoads = (request, response) => {
 
 
 
-module.exports = { getParkingSlots, getUserByEmail, updateSlot, getBuildings, getRoads }
+module.exports = { getParkingSlots, bookSlot, multipleUpdation, getUserByEmail, updateSlot, getBuildings, getRoads }

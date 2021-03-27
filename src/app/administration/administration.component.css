@@ -35,3 +35,43 @@ main {
   position: relative;
   top: 100px;
 }
+
+.attrTable {
+  width: 35%;
+  background-color: azure;
+  z-index: 100000 !important;
+  position: absolute;
+  top: 20%;
+  right: 2%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+
+.heading {
+  text-align: center;
+  text-transform: uppercase;
+  border-bottom: 2px solid #000;
+}
+
+.table-wrap,
+.table,
+.tableCommands {
+  width: 100%;
+}
+
+.thead {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.tableCommands {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 10px 0px;
+}
+
+.tbodyContent {
+  text-align: center;
+}

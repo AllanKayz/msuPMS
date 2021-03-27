@@ -28,6 +28,22 @@ a {
   color: #ffffff !important;
   background-color: #007bff !important;
   transition: 1s all ease;
+  cursor: pointer;
+}
+
+.btn-outline-danger {
+  padding: 10px;
+  color: #ff0000 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #ff0000 !important;
+  border-radius: 5px;
+}
+
+.btn-outline-danger:hover {
+  color: #ffffff !important;
+  background-color: #ff0000 !important;
+  transition: 1s all ease;
+  cursor: pointer;
 }
 
 ul {
@@ -55,7 +71,7 @@ li {
 }
 
 .occupied-slot-icon {
-  border: 2px solid #800080;
+  border: 2px solid #008000;
   background-color: rgba(128, 0, 128, 0.4);
   width: 15px;
   height: 15px;
@@ -63,7 +79,7 @@ li {
 }
 
 .vip-slot-icon {
-  border: 2px solid #ff0000;
+  border: 2px solid #008000;
   background-color: rgba(255, 0, 0, 0.4);
   width: 15px;
   height: 15px;
@@ -71,9 +87,34 @@ li {
 }
 
 .reserved-slot-icon {
-  border: 2px solid #0000ff;
+  border: 2px solid #008000;
   background-color: rgba(0, 0, 255, 0.4);
   width: 15px;
   height: 15px;
   margin: 0 5px;
+}
+
+.w-25 {
+  width: 25%;
+}
+
+.w-45 {
+  width: 45%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-75 {
+  width: 75%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.hide {
+  visibility: hidden;
+  display: none;
 }

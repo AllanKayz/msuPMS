@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -12,7 +12,14 @@ import { ParkingSlotsService } from '../parking-slots.service'
 export class AdministrationComponent implements OnInit {
 
   private map: any;
+  private buildings: any;
+  private roads: any;
   private parkSlots: any;
+  private baseMaps: any;
+  private overlays: any;
+  private buildingLayer: any;
+  private roadLayer: any;
+  private slotsLayer: any;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(private parkingSlotsService: ParkingSlotsService) { }
@@ -27,10 +34,10 @@ export class AdministrationComponent implements OnInit {
       OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}{x}{y}.png', { attribution: '&copy; <a href="https//www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' });
 
     this.map = L.map('map', {
-      center: [-17.39040873783931, 32.24083900451661],
-      zoom: 13,
-      minZoom: 9,
-      maxZoom: 19,
+      center: [-19.516677, 29.840033],
+      zoom: 17,
+      minZoom: 10,
+      maxZoom: 23,
       boxZoom: true,
       layers: [googleHybrid, allLayers],
     })
@@ -40,16 +47,16 @@ export class AdministrationComponent implements OnInit {
     scale.addTo(this.map);
 
     // Add Layer Control to map
-    let baseMaps = {
+    this.baseMaps = {
       "Google Satellite": googleSat,
       "Google Hybrid": googleHybrid,
       "Google Terrain": googleTerrain,
       "Google Streets": googleStreets,
       "Open Street Map": OSM
     }
-
-    L.control.layers(baseMaps).addTo(this.map);
   }
+
+
 
   ngOnInit(): void {
     // Initialize the map container
@@ -59,27 +66,85 @@ export class AdministrationComponent implements OnInit {
       this.parkSlots = slots;
       this.initParkingSlotsLayer();
     });
+
+    this.parkingSlotsService.getBuildings().pipe(takeUntil(this.destroy$)).subscribe(building => {
+      this.buildings = building;
+      this.initBuildingsLayer();
+    });
+
+    this.parkingSlotsService.getRoads().pipe(takeUntil(this.destroy$)).subscribe(roads => {
+      this.roads = roads;
+      this.initRoadsLayer();
+    });
+  }
+
+  // Building Styling
+  private initBuildingsLayer() {
+    this.buildingLayer = L.geoJSON(this.buildings, {
+      style: (feature) => ({
+        weight: 2,
+        opacity: 1,
+        color: '#000000',
+        fillOpacity: 0.8,
+        fillColor: '#ccc'
+      })
+    });
+    this.map.addLayer(this.buildingLayer);
+
+    let overlay = {
+      "Buildings": this.buildingLayer,
+    }
+
+    L.control.layers(this.baseMaps, overlay).addTo(this.map);
+  }
+
+  // Roads Styling 
+  private initRoadsLayer() {
+    this.roadLayer = L.geoJSON(this.roads, {
+      style: (feature) => ({
+        weight: 4,
+        color: 'red'
+      })
+    });
   }
 
   //Parking Slots Styling
   private initParkingSlotsLayer() {
-    const slotsLayer = L.geoJSON(this.parkSlots, {
-      style: (feature) => ({
-        weight: 3,
-        opacity: 0.5,
-        color: '#008f68',
-        fillOpacity: 0.8,
-        fillColor: '#6db65b'
-      }),
+    this.slotsLayer = L.geoJSON(this.parkSlots, {
+      style: (feature: any): any => {
+        let fillClr = '';
+        switch (feature.properties.status) {
+          case 'VIP':
+            fillClr = '#ff0000';
+            break;
+          case 'RESERVED':
+            fillClr = '#000080';
+            break;
+          case 'OCCUPIED':
+            fillClr = '#800080';
+            break;
+          default:
+            fillClr = '#008000';
+            break;
+        }
+
+        return {
+          weight: 3,
+          opacity: 0.5,
+          color: '#008f68',
+          fillOpacity: 0.4,
+          fillColor: fillClr
+        }
+      },
       onEachFeature: (feature, layer) => (
         layer.on({
           click: (e) => (this.layerClick(e)),
-          mouseover: (e) => (this.highlightFeature(e)),
-          mouseout: (e) => (this.resetFeature(e))
+          //mouseover: (e) => (this.highlightFeature(e)),
+          //mouseout: (e) => (this.resetFeature(e))
         })
       )
     });
-    this.map.addLayer(slotsLayer);
+    this.map.addLayer(this.slotsLayer);
   }
 
   // Highlight feature event
@@ -105,30 +170,96 @@ export class AdministrationComponent implements OnInit {
     })
   }
 
+
+  @ViewChild('attrTable') attrTable: any;
+  @ViewChild('tbodyContent') tbodyContent: any;
+
+  private attributes: any;
+  private layerID: number = 0;
   // bind popup on layer click
   private layerClick(e: any) {
     let layer = e.target;
-    if (layer.feature.properties.stand_id == 2900) {
-      layer.bindPopup('<h3>This slot is' + '\t' + layer.feature.properties.stand_id + '</h3><br/><button class="btn btn-outline-primary">Book Into It</button>');
+    this.attributes = layer.feature.properties;
+
+    // control visibility of the attribute table
+    this.attrTable.nativeElement.classList.remove('hide');
+
+    // add attributes data of the clicked item to table
+    let data: any = '';
+    for (let key in this.attributes) {
+      data += ('<tr class="center aligned"><td>' + key + '</td><td>' + this.attributes[key] + '</td></tr>');
     }
-    else {
-      layer.bindPopup('<h3>This slot is ' + '\t' + layer.feature.properties.stand_id + '</h3>');
-    }
+    this.tbodyContent.nativeElement.innerHTML = data;
+    this.layerID = this.attributes.id;
+    this.map.panTo(e.latlng);
   }
+
+  private vip: string = 'VIP';
+  private reserved: string = 'RESERVED';
+  private vaccant: string = 'VACCANT';
+  private occupy: string = 'OCCUPIED';
 
   // Button reserve all slots click event
   onReserveAllSlots() {
-    window.alert('Reseve Slots Clicked')
+    const reserve = this.parkingSlotsService.allSlotStatus(this.reserved);
+    reserve.subscribe(data => {
+      window.alert(data);
+    });
+    location.reload(true)
   }
 
   // Button make all slots VIP event
   onAllSlotsVIP() {
-    window.alert('VIP all slots clicked')
+    const vipAll = this.parkingSlotsService.allSlotStatus(this.vip);
+    vipAll.subscribe(data => {
+      window.alert(data);
+    });
+    location.reload(true);
   }
 
   // Button all slots vacant event
   onAllSlotsVacant() {
-    window.alert('Vacant Slots Clicked')
+    const allVaccant = this.parkingSlotsService.allSlotStatus(this.vaccant);
+    allVaccant.subscribe(data => {
+      window.alert(data);
+    });
+    location.reload(true);
+  }
+
+  vaccantSlot() {
+    const vcnt = this.parkingSlotsService.updateSlotState(this.layerID, this.vaccant);
+    vcnt.subscribe(data => {
+      window.alert(data);
+    });
+    location.reload(true);
+  }
+
+  vipSlot() {
+    const vip = this.parkingSlotsService.updateSlotState(this.layerID, this.vip);
+    vip.subscribe(data => {
+      window.alert(data);
+    });
+    location.reload(true);
+  }
+
+  reserveSlot() {
+    const resvd = this.parkingSlotsService.updateSlotState(this.layerID, this.reserved);
+    resvd.subscribe(data => {
+      window.alert(data);
+    });
+    location.reload(true);
+  }
+
+  occupySlot() {
+    const ocpy = this.parkingSlotsService.updateSlotState(this.layerID, this.occupy);
+    ocpy.subscribe(data => {
+      window.alert(data);
+    });
+    location.reload(true);
+  }
+
+  closeAttrTable() {
+    this.attrTable.nativeElement.classList.add('hide');
   }
 
   // Button on logout event

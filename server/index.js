@@ -15,8 +15,10 @@ app.listen(port, () => { console.log(`App running on port ${port}`); });
 const db = require('./queries');
 
 app.get('/slots', db.getParkingSlots);
+app.post('/bookSlot', db.bookSlot);
+app.post('/updateall', db.multipleUpdation);
 app.get('/users/:email', db.getUserByEmail);
-app.put('/users/:id', db.updateSlot);
+app.post('/updateslot', db.updateSlot);
 app.get('/roads', db.getRoads);
 app.get('/buildings', db.getBuildings);
 

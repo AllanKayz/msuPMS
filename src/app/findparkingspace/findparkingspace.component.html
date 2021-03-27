@@ -35,7 +35,7 @@
     </div>
   </section>
   <div id="map" class="map-container" #map></div>
-  <div class="attrTable">
+  <div #attrTable class="attrTable hide">
     <div class="dialog">
       <div class="heading">
         <h3>Attribute Table</h3>
@@ -48,12 +48,12 @@
               <th>Value</th>
             </tr>
           </thead>
-          <tbody class="tbodyContent">testing</tbody>
+          <tbody #tbodyContent class="tbodyContent"></tbody>
         </table>
       </div>
       <div class="tableCommands">
-        <button class="btn-outline-primary">Book Slot</button>
-        <button class="btn-outline-prmary">Close</button>
+        <button #btnBookSlot class="btn-outline-primary w-45 hide" (click)="bookSlot()">Book Slot</button>
+        <button class="btn-outline-danger w-45" (click)="closeAttrTable()">Close</button>
       </div>
     </div>
   </div>
