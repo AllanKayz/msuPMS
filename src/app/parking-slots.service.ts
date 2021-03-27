@@ -8,7 +8,7 @@ import { retry, catchError } from 'rxjs/operators';
 })
 export class ParkingSlotsService {
 
-  private REST_API_URL = 'http://localhost:3000';
+  private REST_API_URL = 'http://localhost:5000';
   constructor(private httpClient: HttpClient) { }
 
   // Http Options

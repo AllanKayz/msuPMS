@@ -10,7 +10,7 @@ import { User } from './user';
 })
 export class DataService {
 
-  private REST_API_SERVER = 'http://localhost:3000';
+  private REST_API_SERVER = 'http://localhost:5000';
 
   constructor(private httpClient: HttpClient) { }
 

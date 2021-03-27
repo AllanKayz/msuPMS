@@ -33,9 +33,9 @@ export class FindparkingspaceComponent implements OnInit, OnDestroy {
 
     this.map = L.map('map', {
       center: [-19.516677, 29.840033],
-      zoom: 15,
+      zoom: 18,
       minZoom: 9,
-      maxZoom: 20,
+      maxZoom: 23,
       boxZoom: true,
       layers: [googleHybrid]
     })
